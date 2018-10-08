@@ -1,6 +1,10 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import * as Firebase from 'firebase';
+import { createStackNavigator } from 'react-navigation';
+
+//scenes
+import Quest from './src/scenes/Quest';
 
 // Initialize Firebase
 const firebaseConfig = {
@@ -9,6 +13,17 @@ const firebaseConfig = {
   databaseURL: "https://undefined-cfda5.firebaseio.com",
   storageBucket: "undefined-cfda5.appspot.com"
 };
+
+const Navigator = createStackNavigator({
+
+  Quest: {
+    screen: Quest,
+    navigatorOptions: {
+      header: null
+    }
+  }
+  
+});
 
 export default class App extends React.Component {
 
@@ -20,9 +35,7 @@ export default class App extends React.Component {
 
   render() {
     return (
-      <View style={styles.container}>
-        <Text>Open up App.js to start working on your app!</Text>
-      </View>
+      <Navigator/>
     );
   }
 }
