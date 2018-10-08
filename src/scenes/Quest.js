@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { Text, View, StatusBar, StyleSheet, Dimensions, ActivityIndicator } from 'react-native';
+import { Text, View, StatusBar, StyleSheet, Dimensions, ActivityIndicator, AsyncStorage } from 'react-native';
 import ViewGradient from './../components/ViewGradient';
 import Colors from '../values/Colors';
+import * as Firebase from 'firebase';
 
 export default class Quest extends Component{
 
@@ -9,21 +10,30 @@ export default class Quest extends Component{
     super(props);
 
     this.state = {
-      loading: true
+      loading: true,
+      quest: null
     }
   }
 
-  componentWillMount(){
+  async componentWillMount(){
+    Firebase.database().ref('quests').once('value').then((snapshot) => {
+      console.log(snapshot.val());
+      this.setState({quest: snapshot.val()});
+    });
+
+    await AsyncStorage.getItem('quest')
+      .then((quest) => {
+        console.log(quest);
+      });
   }
 
   render(){
 
-    let { loading }  = this.state;
+    let { loading, quest }  = this.state;
 
     return(
       <ViewGradient>
         <View style={styles.top}>
-
         </View>
         <View style={styles.body}>
         </View>

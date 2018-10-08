@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, AsyncStorage } from 'react-native';
 import * as Firebase from 'firebase';
 import { createStackNavigator } from 'react-navigation';
 
@@ -11,7 +11,9 @@ const firebaseConfig = {
   apiKey: "AIzaSyD6Q0MNDkiBTxBxL4WvHawO0i9Gkw4kHkY",
   authDomain: "undefined-cfda5.firebaseapp.com",
   databaseURL: "https://undefined-cfda5.firebaseio.com",
-  storageBucket: "undefined-cfda5.appspot.com"
+  projectId: "undefined-cfda5",
+  storageBucket: "undefined-cfda5.appspot.com",
+  messagingSenderId: "579319703857"
 };
 
 const Navigator = createStackNavigator({
@@ -31,7 +33,17 @@ export default class App extends React.Component {
     Firebase.initializeApp(firebaseConfig);
   }
 
+  async componentWillMount(){
+    await AsyncStorage.getItem('quest')
+      .then((quest) => {
+        console.log('App', quest);
+        if(!quest)
+          AsyncStorage.setItem('quest', '1');
+      });
+  }
+
   render() {
+
     return (
       <Navigator/>
     );
