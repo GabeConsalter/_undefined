@@ -1,6 +1,8 @@
 export default {
 
+  white: '#FFF',
+
   gradient: {
-    dark: ['#000000', '#434343']
+    dark: ['#232526', '#414345']
   }
 }

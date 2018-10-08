@@ -18,9 +18,7 @@ const Navigator = createStackNavigator({
 
   Quest: {
     screen: Quest,
-    navigatorOptions: {
-      header: null
-    }
+    navigationOptions: { header: null }
   }
   
 });
