@@ -58,12 +58,15 @@ export default class Quest extends Component{
             <View style={styles.header}>
               <View style={styles.left}/>
               <View style={styles.title}>
-                {fontLoaded ? <Text style={styles.textTitle}>_u</Text> : null}
+                <Text style={styles.textTitle}>_u</Text>
               </View>
               <View style={styles.right}/>
             </View>
             <View style={styles.body}>
-              {fontLoaded ? <Text style={styles.soon}>You're good. {'\n'}More questions soon...</Text> : null}
+              <Text style={styles.soon}>You're good. {'\n'}More questions soon...</Text>
+              <TouchableOpacity onPress={() => {this.restart()}}>
+                <Text style={styles.restart}>Restart all questions</Text>
+              </TouchableOpacity>
             </View>
             <View style={styles.bottom}/>
           </ViewGradient>
@@ -185,12 +188,9 @@ export default class Quest extends Component{
   next(){
     let { id } = this.state;
 
-    
-
     AsyncStorage.setItem('quest', `${Number(id) + 1}`);
 
     Firebase.database().ref(`quests/${Number(id) + 1}`).on('value', (data) => {
-      console.log(data.val());
 
       if(data.val())
         this.setState({ 
@@ -200,7 +200,31 @@ export default class Quest extends Component{
         });
       else
         this.setState({
-          quest: null,
+          quest: 'no questions',
+          id: null,
+          countdown: 0
+        });
+    });
+
+  }
+
+  restart(){
+
+    
+
+    AsyncStorage.setItem('quest', '1');
+
+    Firebase.database().ref(`quests/1`).on('value', (data) => {
+
+      if(data.val())
+        this.setState({ 
+          quest: data.val(),
+          id: 1,
+          countdown: data.val().answer.length
+        });
+      else
+        this.setState({
+          quest: 'no questions',
           id: null,
           countdown: 0
         });
@@ -326,7 +350,15 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontFamily: 'CutiveMono',
     fontSize: 24,
-    color: Colors.grey
+    color: Colors.grey,
+    marginBottom: 32
+  },
+
+  restart: {
+    textAlign: 'center',
+    fontFamily: 'CutiveMono',
+    fontSize: 24,
+    color: Colors.white
   }
 
 });

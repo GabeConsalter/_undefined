@@ -18,7 +18,7 @@ export default class Bar extends Component{
     return(
       <View style={styles.container}>
         <View style={[styles.one]}/>
-        <View style={[styles.two, {width: ((this.props.current * 100) / (this.props.total)) + '%' }]}/>
+        <View style={[styles.two, {width: (((this.props.current * 100) / (this.props.total)) > 100 ? 100 : ((this.props.current * 100) / (this.props.total))) + '%' }]}/>
       </View>
     );
   }
