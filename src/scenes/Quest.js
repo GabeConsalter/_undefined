@@ -1,7 +1,7 @@
 import { Font } from 'expo';
 import * as Firebase from 'firebase';
 import React, { Component } from 'react';
-import { AsyncStorage, Dimensions, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { AsyncStorage, Dimensions, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View, ActivityIndicator } from 'react-native';
 import Bar from '../components/Bar';
 import Colors from '../values/Colors';
 import ViewGradient from './../components/ViewGradient';
@@ -16,20 +16,21 @@ export default class Quest extends Component{
       quest: null,
       fontLoaded: false,
       countdown: 0,
-      input: ''
+      input: '',
+      id: null
     }
   }
 
   async componentWillMount(){
-    Firebase.database().ref('quests').once('value').then((snapshot) => {
-      console.log(snapshot.val());
-      this.setState({quest: snapshot.val()});
-    });
 
     await AsyncStorage.getItem('quest')
       .then((quest) => {
-        console.log(quest);
+        Firebase.database().ref(`quests/${quest}`).on('value', (data) => {
+          this.setState({ quest: data.val() });
+          this.setState({ id: quest });
+        });
       });
+
   }
 
   async componentDidMount(){
@@ -42,14 +43,14 @@ export default class Quest extends Component{
 
   render(){
 
-    let { loading, quest, fontLoaded, input }  = this.state;
+    let { loading, quest, fontLoaded, input, id }  = this.state;
 
     return(
       <ViewGradient>
         <StatusBar barStyle='light-content'/>
         <View style={styles.header}>
           <View style={styles.left}>
-            {fontLoaded ? <Text style={styles.questID}>#1</Text> : null}
+            {fontLoaded && quest ? <Text style={styles.questID}>#{id}</Text> : null}
           </View>
           <View style={styles.title}>
             {fontLoaded ? <Text style={styles.textTitle}>_u</Text> : null}
@@ -57,7 +58,7 @@ export default class Quest extends Component{
           <View style={styles.right}/>
         </View>
         <View style={styles.body}>
-          {fontLoaded ? <Text style={styles.quest}>CJ</Text> : null}
+          {fontLoaded && quest ? <Text style={styles.quest}>{quest.description}</Text> : null}
           {fontLoaded ? (
             <TextInput
               style={styles.input}
@@ -65,7 +66,7 @@ export default class Quest extends Component{
           ) : null}
           <Bar/>
           <View style={styles.actions}> 
-            {fontLoaded ? <Text style={styles.countdown}>5</Text> : null}
+            {fontLoaded && quest ? <Text style={styles.countdown}>{quest.answer.length}</Text> : null}
             <TouchableOpacity style={{flex: 1}}>
               {fontLoaded && input !== '' ? <Text style={styles.ok}>OK</Text> : null}
             </TouchableOpacity>
