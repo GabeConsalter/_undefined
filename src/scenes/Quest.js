@@ -1,11 +1,10 @@
-import React, { Component } from 'react';
-import { Text,View, StatusBar, StyleSheet, Dimensions, ActivityIndicator, AsyncStorage, TouchableOpacity, TextInput } from 'react-native';
-import ViewGradient from './../components/ViewGradient';
-import Colors from '../values/Colors';
-import * as Firebase from 'firebase';
 import { Font } from 'expo';
-import { Header } from 'react-navigation';
+import * as Firebase from 'firebase';
+import React, { Component } from 'react';
+import { AsyncStorage, Dimensions, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Bar from '../components/Bar';
+import Colors from '../values/Colors';
+import ViewGradient from './../components/ViewGradient';
 
 export default class Quest extends Component{
 
@@ -16,7 +15,8 @@ export default class Quest extends Component{
       loading: true,
       quest: null,
       fontLoaded: false,
-      countdown: 0
+      countdown: 0,
+      input: ''
     }
   }
 
@@ -42,7 +42,7 @@ export default class Quest extends Component{
 
   render(){
 
-    let { loading, quest, fontLoaded }  = this.state;
+    let { loading, quest, fontLoaded, input }  = this.state;
 
     return(
       <ViewGradient>
@@ -57,6 +57,7 @@ export default class Quest extends Component{
           <View style={styles.right}/>
         </View>
         <View style={styles.body}>
+          {fontLoaded ? <Text style={styles.quest}>CJ</Text> : null}
           {fontLoaded ? (
             <TextInput
               style={styles.input}
@@ -66,7 +67,7 @@ export default class Quest extends Component{
           <View style={styles.actions}> 
             {fontLoaded ? <Text style={styles.countdown}>5</Text> : null}
             <TouchableOpacity style={{flex: 1}}>
-              {fontLoaded ? <Text style={styles.ok}>OK</Text> : null}
+              {fontLoaded && input !== '' ? <Text style={styles.ok}>OK</Text> : null}
             </TouchableOpacity>
           </View>
         </View>
@@ -113,7 +114,8 @@ const styles = StyleSheet.create({
   body: {
     flex: 7,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    paddingBottom: 64
   },
 
   left: {
@@ -176,6 +178,13 @@ const styles = StyleSheet.create({
     fontSize: 24,
     color: Colors.grey,
     flex: 1
+  },
+
+  quest: {
+    fontSize: 32,
+    fontFamily: 'CutiveMono',
+    color: Colors.grey,
+    marginBottom: 32
   }
 
 });
