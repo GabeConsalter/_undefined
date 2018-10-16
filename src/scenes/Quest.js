@@ -48,26 +48,27 @@ export default class Quest extends Component{
 
     let { loading, quest, fontLoaded, input, id, countdown }  = this.state;
 
-    return(
-      <ViewGradient>
-        <StatusBar barStyle='light-content'/>
-        <View style={styles.header}>
-          <View style={styles.left}>
-            {fontLoaded && quest ? <Text style={styles.questID}>#{id}</Text> : null}
+    if(quest && fontLoaded)
+      return (
+        <ViewGradient>
+          <StatusBar barStyle='light-content'/>
+          <View style={styles.header}>
+            <View style={styles.left}>
+              <Text style={styles.questID}>#{id}</Text>
+            </View>
+            <View style={styles.title}>
+              <Text style={styles.textTitle}>_u</Text>
+            </View>
+            <View style={styles.right}/>
           </View>
-          <View style={styles.title}>
-            {fontLoaded ? <Text style={styles.textTitle}>_u</Text> : null}
-          </View>
-          <View style={styles.right}/>
-        </View>
-        <View style={styles.body}>
-          {fontLoaded && quest ? <Text style={styles.quest}>{quest.description}</Text> : null}
-          {fontLoaded && quest ? (
+          <View style={styles.body}>
+            <Text style={styles.quest}>{quest.description}</Text>
             <TextInput
               style={styles.input}
               autoCapitalize='characters'
               autoFocus={true}
               maxLength={quest.answer.length}
+              autoCorrect={false}
               onEndEditing={() => {this.ok()}}
               onChangeText={(input) => {
                 this.setState({
@@ -75,20 +76,36 @@ export default class Quest extends Component{
                   countdown: quest.answer.length - input.length
                 });
               }}/>
-          ) : null}
-          <Bar/>
-          <View style={styles.actions}> 
-            {fontLoaded && quest ? <Text style={styles.countdown}>{countdown}</Text> : null}
-            <TouchableOpacity disabled={countdown !== 0} style={{flex: 1}} onPress={() => {this.ok();}}>
-              {fontLoaded && input !== '' ? <Text style={[styles.ok, {color: countdown === 0 ? Colors.white : Colors.grey}]}>OK</Text> : null}
-            </TouchableOpacity>
+            <Bar
+              total={quest.answer.length}
+              current={input.length}/>
+            <View style={styles.actions}> 
+              <Text style={styles.countdown}>{countdown}</Text>
+              <TouchableOpacity disabled={countdown !== 0} style={{flex: 1}} onPress={() => {this.ok();}}>
+                <Text style={[styles.ok, {color: countdown === 0 ? Colors.white : Colors.grey}]}>OK</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
-        <View style={styles.bottom}>
-
-        </View>
-      </ViewGradient>
-    );
+          <View style={styles.bottom}/>
+        </ViewGradient>
+      );
+    else
+      return (
+        <ViewGradient>
+          <StatusBar barStyle='light-content'/>
+          <View style={styles.header}>
+            <View style={styles.left}/>
+            <View style={styles.title}>
+              {fontLoaded ? <Text style={styles.textTitle}>_u</Text> : null}
+            </View>
+            <View style={styles.right}/>
+          </View>
+          <View style={styles.body}>
+            <ActivityIndicator color={Colors.white} />
+          </View>
+          <View style={styles.bottom}/>
+        </ViewGradient>
+      );
   }
 
   reveal(){
