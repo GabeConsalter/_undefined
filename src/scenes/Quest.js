@@ -58,7 +58,7 @@ export default class Quest extends Component{
             <View style={styles.header}>
               <View style={styles.left}/>
               <View style={styles.title}>
-                <Text style={styles.textTitle}>_u</Text>
+                <Text style={styles.textTitle}>_undefined</Text>
               </View>
               <View style={styles.right}/>
             </View>
@@ -80,7 +80,7 @@ export default class Quest extends Component{
                 <Text style={styles.questID}>#{id}</Text>
               </View>
               <View style={styles.title}>
-                <Text style={styles.textTitle}>_u</Text>
+                <Text style={styles.textTitle}>_undefined</Text>
               </View>
               <View style={styles.right}/>
             </View>
@@ -125,7 +125,7 @@ export default class Quest extends Component{
           <View style={styles.header}>
             <View style={styles.left}/>
             <View style={styles.title}>
-              {fontLoaded ? <Text style={styles.textTitle}>_u</Text> : null}
+              {fontLoaded ? <Text style={styles.textTitle}>_undefined</Text> : null}
             </View>
             <View style={styles.right}/>
           </View>
