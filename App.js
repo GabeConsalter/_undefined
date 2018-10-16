@@ -21,9 +21,7 @@ const Navigator = createStackNavigator({
 
   Quest: {
     screen: Quest,
-    navigationOptions: { 
-      title: '_u'
-    }
+    navigationOptions: { header: null }
   }
   
 });
