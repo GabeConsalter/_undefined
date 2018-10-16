@@ -5,6 +5,7 @@ import Colors from '../values/Colors';
 import * as Firebase from 'firebase';
 import { Font } from 'expo';
 import { Header } from 'react-navigation';
+import Bar from '../components/Bar';
 
 export default class Quest extends Component{
 
@@ -60,7 +61,7 @@ export default class Quest extends Component{
           </View>
         </View>
         <View style={styles.body}>
-          
+          <Bar/>
         </View>
         <View style={styles.bottom}>
 
@@ -107,7 +108,8 @@ const styles = StyleSheet.create({
   body: {
     flex: 7,
     //backgroundColor: '#999',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    alignItems: 'center'
   },
 
   left: {
