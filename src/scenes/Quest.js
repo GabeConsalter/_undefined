@@ -1,7 +1,7 @@
 import { Font } from 'expo';
 import * as Firebase from 'firebase';
 import React, { Component } from 'react';
-import { AsyncStorage, Dimensions, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View, ActivityIndicator } from 'react-native';
+import { AsyncStorage, Dimensions, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View, ActivityIndicator, Keyboard } from 'react-native';
 import Bar from '../components/Bar';
 import Colors from '../values/Colors';
 import ViewGradient from './../components/ViewGradient';
@@ -17,7 +17,9 @@ export default class Quest extends Component{
       fontLoaded: false,
       countdown: 0,
       input: '',
-      id: null
+      id: null,
+      sended: false,
+      response: ''
     }
   }
 
@@ -46,7 +48,7 @@ export default class Quest extends Component{
 
   render(){
 
-    let { loading, quest, fontLoaded, input, id, countdown }  = this.state;
+    let { loading, quest, fontLoaded, input, id, countdown, sended, response }  = this.state;
 
     if(quest && fontLoaded)
       return (
@@ -64,26 +66,32 @@ export default class Quest extends Component{
           <View style={styles.body}>
             <Text style={styles.quest}>{quest.description}</Text>
             <TextInput
+              ref='input'
+              value={input}
               style={styles.input}
               autoCapitalize='characters'
+              editable={!sended}
               autoFocus={true}
               maxLength={quest.answer.length}
               autoCorrect={false}
-              onEndEditing={() => {this.ok()}}
               onChangeText={(input) => {
                 this.setState({
                   input,
                   countdown: quest.answer.length - input.length
                 });
+
+                if(input.length === quest.answer.length){
+                  Keyboard.dismiss();
+                  this.setState({ sended: true });
+                  this.ok(input);
+                }
               }}/>
             <Bar
               total={quest.answer.length}
               current={input.length}/>
             <View style={styles.actions}> 
               <Text style={styles.countdown}>{countdown}</Text>
-              <TouchableOpacity disabled={countdown !== 0} style={{flex: 1}} onPress={() => {this.ok();}}>
-                <Text style={[styles.ok, {color: countdown === 0 ? Colors.white : Colors.grey}]}>OK</Text>
-              </TouchableOpacity>
+              <Text style={styles.response}>{response}</Text>
             </View>
           </View>
           <View style={styles.bottom}/>
@@ -112,8 +120,67 @@ export default class Quest extends Component{
 
   }
 
-  ok(){
-    console.log('ok');
+  ok(input){
+
+    let { quest } = this.state;
+
+    if(input.toUpperCase() === quest.answer.toUpperCase())
+      this.correct();
+    else
+      this.incorrect();
+  }
+
+  correct(){
+
+    this.setState({ response: 'YEAH!' });
+
+    setTimeout(() => {
+      this.setState({
+        sended: false,
+        response: '',
+        input: ''
+      });
+    }, 1000);
+
+    this.next();
+  };
+
+  incorrect(){
+
+    console.log(this.state.quest.answer.toUpperCase() === this.state.input);
+    console.log(this.state.input);
+
+    this.setState({ response: 'NOP' });
+
+    setTimeout(() => {
+      this.setState({
+        sended: false,
+        response: '',
+        input: ''
+      });
+
+      this.refs.input.focus();
+    }, 1000);
+
+  }
+
+  next(){
+    let { id } = this.state;
+
+    
+
+    AsyncStorage.setItem('quest', `${Number(id) + 1}`);
+
+    Firebase.database().ref(`quests/${Number(id) + 1}`).on('value', (data) => {
+      console.log(data.val());
+
+      this.setState({ 
+        quest: data.val(),
+        id: Number(id) + 1,
+        countdown: data.val().answer.length
+      });
+    });
+
   }
 
 }
@@ -149,7 +216,8 @@ const styles = StyleSheet.create({
     flex: 7,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingBottom: 64
+    paddingBottom: 64,
+    paddingHorizontal: 32
   },
 
   left: {
@@ -214,10 +282,19 @@ const styles = StyleSheet.create({
   },
 
   quest: {
-    fontSize: 32,
+    fontSize: 24,
     fontFamily: 'CutiveMono',
     color: Colors.grey,
-    marginBottom: 32
+    marginBottom: 32,
+    textAlign: 'center'
+  },
+
+  response: {
+    flex: 1,
+    fontFamily: 'CutiveMono',
+    color: Colors.white,
+    fontSize: 24,
+    textAlign: 'right'
   }
 
 });
