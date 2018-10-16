@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View, AsyncStorage } from 'react-native';
 import * as Firebase from 'firebase';
 import { createStackNavigator } from 'react-navigation';
+import { Font } from 'expo';
 
 //scenes
 import Quest from './src/scenes/Quest';
@@ -20,7 +21,9 @@ const Navigator = createStackNavigator({
 
   Quest: {
     screen: Quest,
-    navigationOptions: { header: null }
+    navigationOptions: { 
+      title: '_u'
+    }
   }
   
 });
@@ -40,6 +43,12 @@ export default class App extends React.Component {
         if(!quest)
           AsyncStorage.setItem('quest', '1');
       });
+  }
+
+  componentDidMount(){
+    Font.loadAsync({
+      'CutiveMono': require('./assets/fonts/CutiveMono-Regular.ttf')
+    });
   }
 
   render() {

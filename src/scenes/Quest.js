@@ -3,6 +3,7 @@ import { Text, View, StatusBar, StyleSheet, Dimensions, ActivityIndicator, Async
 import ViewGradient from './../components/ViewGradient';
 import Colors from '../values/Colors';
 import * as Firebase from 'firebase';
+import { Font } from 'expo';
 
 export default class Quest extends Component{
 
@@ -11,7 +12,8 @@ export default class Quest extends Component{
 
     this.state = {
       loading: true,
-      quest: null
+      quest: null,
+      fontLoaded: false
     }
   }
 
@@ -27,15 +29,26 @@ export default class Quest extends Component{
       });
   }
 
+  async componentDidMount(){
+    await Font.loadAsync({
+      'CutiveMono': require('../../assets/fonts/CutiveMono-Regular.ttf')
+    });
+
+    this.setState({ fontLoaded: true })
+  }
+
   render(){
 
-    let { loading, quest }  = this.state;
+    let { loading, quest, fontLoaded }  = this.state;
 
     return(
       <ViewGradient>
-        <View style={styles.top}>
-        </View>
+        <StatusBar barStyle='light-content'/>
         <View style={styles.body}>
+          {fontLoaded ? (
+            <Text style={{color: 'white', fontFamily: 'CutiveMono'}}>Hello</Text>
+            ) : null
+          }
         </View>
         <View style={styles.bottom}>
 
