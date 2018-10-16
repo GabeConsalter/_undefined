@@ -29,9 +29,9 @@ export default class Quest extends Component{
       .then((quest) => {
         Firebase.database().ref(`quests/${quest}`).on('value', (data) => {
           this.setState({ 
-            quest: data.val(),
+            quest: data.val() ? data.val() : 'no questions',
             id: quest,
-            countdown: data.val().answer.length
+            countdown: data.val() ? data.val().answer.length : 0
           });
         });
       });
@@ -51,51 +51,69 @@ export default class Quest extends Component{
     let { loading, quest, fontLoaded, input, id, countdown, sended, response }  = this.state;
 
     if(quest && fontLoaded)
-      return (
-        <ViewGradient>
-          <StatusBar barStyle='light-content'/>
-          <View style={styles.header}>
-            <View style={styles.left}>
-              <Text style={styles.questID}>#{id}</Text>
+      if(quest === 'no questions')
+        return (
+          <ViewGradient>
+            <StatusBar barStyle='light-content'/>
+            <View style={styles.header}>
+              <View style={styles.left}/>
+              <View style={styles.title}>
+                {fontLoaded ? <Text style={styles.textTitle}>_u</Text> : null}
+              </View>
+              <View style={styles.right}/>
             </View>
-            <View style={styles.title}>
-              <Text style={styles.textTitle}>_u</Text>
+            <View style={styles.body}>
+              {fontLoaded ? <Text style={styles.soon}>You're good. {'\n'}More questions soon...</Text> : null}
             </View>
-            <View style={styles.right}/>
-          </View>
-          <View style={styles.body}>
-            <Text style={styles.quest}>{quest.description}</Text>
-            <TextInput
-              ref='input'
-              value={input}
-              style={styles.input}
-              autoCapitalize='characters'
-              editable={!sended}
-              autoFocus={true}
-              maxLength={quest.answer.length}
-              autoCorrect={false}
-              onChangeText={(input) => {
-                this.setState({
-                  input,
-                  countdown: quest.answer.length - input.length
-                });
+            <View style={styles.bottom}/>
+          </ViewGradient>
+        );
+      else
+        return (
+          <ViewGradient>
+            <StatusBar barStyle='light-content'/>
+            <View style={styles.header}>
+              <View style={styles.left}>
+                <Text style={styles.questID}>#{id}</Text>
+              </View>
+              <View style={styles.title}>
+                <Text style={styles.textTitle}>_u</Text>
+              </View>
+              <View style={styles.right}/>
+            </View>
+            <View style={styles.body}>
+              <Text style={styles.quest}>{quest.description}</Text>
+              <TextInput
+                ref='input'
+                value={input}
+                style={styles.input}
+                autoCapitalize='characters'
+                editable={!sended}
+                autoFocus={true}
+                maxLength={quest.answer.length}
+                autoCorrect={false}
+                onChangeText={(input) => {
+                  this.setState({
+                    input,
+                    countdown: quest.answer.length - input.length
+                  });
 
-                if(input.length === quest.answer.length){
-                  Keyboard.dismiss();
-                  this.setState({ sended: true });
-                  this.ok(input);
-                }
-              }}/>
-            <Bar
-              total={quest.answer.length}
-              current={input.length}/>
-            <View style={styles.actions}> 
-              <Text style={styles.countdown}>{countdown}</Text>
-              <Text style={styles.response}>{response}</Text>
+                  if(input.length === quest.answer.length){
+                    Keyboard.dismiss();
+                    this.setState({ sended: true });
+                    this.ok(input);
+                  }
+                }}/>
+              <Bar
+                total={quest.answer.length}
+                current={input.length}/>
+              <View style={styles.actions}> 
+                <Text style={styles.countdown}>{countdown}</Text>
+                <Text style={styles.response}>{response}</Text>
+              </View>
             </View>
-          </View>
-          <View style={styles.bottom}/>
-        </ViewGradient>
+            <View style={styles.bottom}/>
+          </ViewGradient>
       );
     else
       return (
@@ -174,11 +192,18 @@ export default class Quest extends Component{
     Firebase.database().ref(`quests/${Number(id) + 1}`).on('value', (data) => {
       console.log(data.val());
 
-      this.setState({ 
-        quest: data.val(),
-        id: Number(id) + 1,
-        countdown: data.val().answer.length
-      });
+      if(data.val())
+        this.setState({ 
+          quest: data.val(),
+          id: Number(id) + 1,
+          countdown: data.val().answer.length
+        });
+      else
+        this.setState({
+          quest: null,
+          id: null,
+          countdown: 0
+        });
     });
 
   }
@@ -295,6 +320,13 @@ const styles = StyleSheet.create({
     color: Colors.white,
     fontSize: 24,
     textAlign: 'right'
+  },
+
+  soon: {
+    textAlign: 'center',
+    fontFamily: 'CutiveMono',
+    fontSize: 24,
+    color: Colors.grey
   }
 
 });
