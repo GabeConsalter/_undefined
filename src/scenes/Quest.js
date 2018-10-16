@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, StatusBar, StyleSheet, Dimensions, ActivityIndicator, AsyncStorage, TouchableOpacity } from 'react-native';
+import { Text,View, StatusBar, StyleSheet, Dimensions, ActivityIndicator, AsyncStorage, TouchableOpacity, TextInput } from 'react-native';
 import ViewGradient from './../components/ViewGradient';
 import Colors from '../values/Colors';
 import * as Firebase from 'firebase';
@@ -16,7 +16,7 @@ export default class Quest extends Component{
       loading: true,
       quest: null,
       fontLoaded: false,
-      reveal: 2
+      countdown: 0
     }
   }
 
@@ -37,12 +37,12 @@ export default class Quest extends Component{
       'CutiveMono': require('../../assets/fonts/CutiveMono-Regular.ttf')
     });
 
-    this.setState({ fontLoaded: true })
+    this.setState({ fontLoaded: true });
   }
 
   render(){
 
-    let { loading, quest, fontLoaded, reveal }  = this.state;
+    let { loading, quest, fontLoaded }  = this.state;
 
     return(
       <ViewGradient>
@@ -54,14 +54,21 @@ export default class Quest extends Component{
           <View style={styles.title}>
             {fontLoaded ? <Text style={styles.textTitle}>_u</Text> : null}
           </View>
-          <View style={styles.right}>
-            <TouchableOpacity disabled={reveal <= 0} onPress={() => {this.reveal()}}>
-              {fontLoaded ? <Text style={[styles.textReveal, {color: reveal > 0 ? Colors.white : Colors.grey}]}>A*</Text> : null}
-            </TouchableOpacity>
-          </View>
+          <View style={styles.right}/>
         </View>
         <View style={styles.body}>
+          {fontLoaded ? (
+            <TextInput
+              style={styles.input}
+              autoCapitalize='characters'/>
+          ) : null}
           <Bar/>
+          <View style={styles.actions}> 
+            {fontLoaded ? <Text style={styles.countdown}>5</Text> : null}
+            <TouchableOpacity style={{flex: 1}}>
+              {fontLoaded ? <Text style={styles.ok}>OK</Text> : null}
+            </TouchableOpacity>
+          </View>
         </View>
         <View style={styles.bottom}>
 
@@ -97,17 +104,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 16
-    // backgroundColor: '#500'
   },
 
   bottom: {
-    flex: 1,
-    //backgroundColor: '#050'
+    flex: 1
   },
 
   body: {
     flex: 7,
-    //backgroundColor: '#999',
     justifyContent: 'center',
     alignItems: 'center'
   },
@@ -142,6 +146,36 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontFamily: 'CutiveMono',
     textAlign: 'center'
+  },
+
+  input: {
+    width: Dimensions.get('window').width * .8,
+    fontSize: 32,
+    marginBottom: 2,
+    color: Colors.grey,
+    textAlign: 'center',
+    fontFamily: 'CutiveMono'
+  },
+
+  actions: {
+    flexDirection: 'row',
+    marginTop: 4,
+    justifyContent: 'space-between',
+    width: Dimensions.get('window').width * .8
+  },
+
+  ok: {
+    fontSize: 24,
+    color: Colors.white,
+    fontFamily: 'CutiveMono',
+    alignSelf: 'flex-end'
+  },
+
+  countdown: {
+    fontFamily: 'CutiveMono',
+    fontSize: 24,
+    color: Colors.grey,
+    flex: 1
   }
 
 });
