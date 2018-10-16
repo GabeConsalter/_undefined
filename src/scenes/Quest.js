@@ -161,9 +161,9 @@ export default class Quest extends Component{
         response: '',
         input: ''
       });
-    }, 1000);
 
-    this.next();
+      this.next();
+    }, 1000);
   };
 
   incorrect(){
