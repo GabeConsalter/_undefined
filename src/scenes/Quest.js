@@ -26,8 +26,11 @@ export default class Quest extends Component{
     await AsyncStorage.getItem('quest')
       .then((quest) => {
         Firebase.database().ref(`quests/${quest}`).on('value', (data) => {
-          this.setState({ quest: data.val() });
-          this.setState({ id: quest });
+          this.setState({ 
+            quest: data.val(),
+            id: quest,
+            countdown: data.val().answer.length
+          });
         });
       });
 
@@ -43,7 +46,7 @@ export default class Quest extends Component{
 
   render(){
 
-    let { loading, quest, fontLoaded, input, id }  = this.state;
+    let { loading, quest, fontLoaded, input, id, countdown }  = this.state;
 
     return(
       <ViewGradient>
@@ -59,16 +62,25 @@ export default class Quest extends Component{
         </View>
         <View style={styles.body}>
           {fontLoaded && quest ? <Text style={styles.quest}>{quest.description}</Text> : null}
-          {fontLoaded ? (
+          {fontLoaded && quest ? (
             <TextInput
               style={styles.input}
-              autoCapitalize='characters'/>
+              autoCapitalize='characters'
+              autoFocus={true}
+              maxLength={quest.answer.length}
+              onEndEditing={() => {this.ok()}}
+              onChangeText={(input) => {
+                this.setState({
+                  input,
+                  countdown: quest.answer.length - input.length
+                });
+              }}/>
           ) : null}
           <Bar/>
           <View style={styles.actions}> 
-            {fontLoaded && quest ? <Text style={styles.countdown}>{quest.answer.length}</Text> : null}
-            <TouchableOpacity style={{flex: 1}}>
-              {fontLoaded && input !== '' ? <Text style={styles.ok}>OK</Text> : null}
+            {fontLoaded && quest ? <Text style={styles.countdown}>{countdown}</Text> : null}
+            <TouchableOpacity disabled={countdown !== 0} style={{flex: 1}} onPress={() => {this.ok();}}>
+              {fontLoaded && input !== '' ? <Text style={[styles.ok, {color: countdown === 0 ? Colors.white : Colors.grey}]}>OK</Text> : null}
             </TouchableOpacity>
           </View>
         </View>
@@ -81,6 +93,10 @@ export default class Quest extends Component{
 
   reveal(){
 
+  }
+
+  ok(){
+    console.log('ok');
   }
 
 }
@@ -169,7 +185,6 @@ const styles = StyleSheet.create({
 
   ok: {
     fontSize: 24,
-    color: Colors.white,
     fontFamily: 'CutiveMono',
     alignSelf: 'flex-end'
   },
