@@ -95,6 +95,8 @@ export default class Quest extends Component{
                 autoFocus={true}
                 maxLength={quest.answer.toString().length}
                 autoCorrect={false}
+                keyboardType={quest.type === 'text' ? 'default' : 'numeric'}
+                keyboardAppearance='dark'
                 onChangeText={(input) => {
                   this.setState({
                     input,
