@@ -31,7 +31,7 @@ export default class Quest extends Component{
           this.setState({ 
             quest: data.val() ? data.val() : 'no questions',
             id: quest,
-            countdown: data.val() ? data.val().answer.length : 0
+            countdown: data.val() ? data.val().answer.toString().length : 0
           });
         });
       });
@@ -93,22 +93,22 @@ export default class Quest extends Component{
                 autoCapitalize='characters'
                 editable={!sended}
                 autoFocus={true}
-                maxLength={quest.answer.length}
+                maxLength={quest.answer.toString().length}
                 autoCorrect={false}
                 onChangeText={(input) => {
                   this.setState({
                     input,
-                    countdown: quest.answer.length - input.length
+                    countdown: quest.answer.toString().length - input.length
                   });
 
-                  if(input.length === quest.answer.length){
+                  if(input.length === quest.answer.toString().length){
                     Keyboard.dismiss();
                     this.setState({ sended: true });
                     this.ok(input);
                   }
                 }}/>
               <Bar
-                total={quest.answer.length}
+                total={quest.answer.toString().length}
                 current={input.length}/>
               <View style={styles.actions}> 
                 <Text style={styles.countdown}>{countdown}</Text>
@@ -145,7 +145,7 @@ export default class Quest extends Component{
 
     let { quest } = this.state;
 
-    if(input.toUpperCase() === quest.answer.toUpperCase())
+    if(input.toString().toUpperCase() === quest.answer.toString().toUpperCase())
       this.correct();
     else
       this.incorrect();
@@ -192,12 +192,15 @@ export default class Quest extends Component{
 
     Firebase.database().ref(`quests/${Number(id) + 1}`).on('value', (data) => {
 
-      if(data.val())
+      if(data.val()){
         this.setState({ 
           quest: data.val(),
           id: Number(id) + 1,
-          countdown: data.val().answer.length
+          countdown: data.val().answer.toString().length
         });
+
+        this.refs.input.focus();
+      }
       else
         this.setState({
           quest: 'no questions',
@@ -216,12 +219,15 @@ export default class Quest extends Component{
 
     Firebase.database().ref(`quests/1`).on('value', (data) => {
 
-      if(data.val())
+      if(data.val()){
         this.setState({ 
           quest: data.val(),
           id: 1,
-          countdown: data.val().answer.length
+          countdown: data.val().answer.toString().length
         });
+
+        this.refs.input.focus();
+      }
       else
         this.setState({
           quest: 'no questions',
