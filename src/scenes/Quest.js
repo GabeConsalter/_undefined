@@ -227,8 +227,6 @@ export default class Quest extends Component{
           id: 1,
           countdown: data.val().answer.toString().length
         });
-
-        this.refs.input.focus();
       }
       else
         this.setState({
