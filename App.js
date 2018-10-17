@@ -3,9 +3,13 @@ import { StyleSheet, Text, View, AsyncStorage } from 'react-native';
 import * as Firebase from 'firebase';
 import { createStackNavigator } from 'react-navigation';
 import { Font } from 'expo';
+import { Tester, TestHookStore } from 'cavy';
+import QuestSpec from './specs/QuestSpec';
 
 //scenes
 import Quest from './src/scenes/Quest';
+
+const testHookStore = new TestHookStore();
 
 // Initialize Firebase
 const firebaseConfig = {
@@ -52,7 +56,9 @@ export default class App extends React.Component {
   render() {
 
     return (
-      <Navigator/>
+      <Tester specs={[QuestSpec]} store={testHookStore} waitTime={4000}>
+        <Navigator/>
+      </Tester>
     );
   }
 }

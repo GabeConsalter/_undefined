@@ -6,7 +6,9 @@ import Bar from '../components/Bar';
 import Colors from '../values/Colors';
 import ViewGradient from './../components/ViewGradient';
 
-export default class Quest extends Component{
+import { hook } from 'cavy';
+
+class Quest extends Component{
 
   constructor(props){
     super(props);
@@ -64,7 +66,7 @@ export default class Quest extends Component{
             </View>
             <View style={styles.body}>
               <Text style={styles.soon}>You're good. {'\n'}More questions soon...</Text>
-              <TouchableOpacity onPress={() => {this.restart()}}>
+              <TouchableOpacity onPress={() => {this.restart()}} ref={this.props.generateTestHook('Quest.ButtonRestart')}>
                 <Text style={styles.restart}>Restart all questions</Text>
               </TouchableOpacity>
             </View>
@@ -87,7 +89,7 @@ export default class Quest extends Component{
             <View style={styles.body}>
               <Text style={styles.quest}>{quest.description}</Text>
               <TextInput
-                ref='input'
+                ref={this.props.generateTestHook('Quest.TextInput')}
                 value={input}
                 style={styles.input}
                 autoCapitalize='characters'
@@ -95,7 +97,7 @@ export default class Quest extends Component{
                 autoFocus={true}
                 maxLength={quest.answer.toString().length}
                 autoCorrect={false}
-                keyboardType={quest.type === 'text' ? 'default' : 'numeric'}
+                keyboardType={'default'}
                 keyboardAppearance='dark'
                 onChangeText={(input) => {
                   this.setState({
@@ -132,7 +134,7 @@ export default class Quest extends Component{
             <View style={styles.right}/>
           </View>
           <View style={styles.body}>
-            <ActivityIndicator color={Colors.white} />
+            <ActivityIndicator color={Colors.white} ref={this.props.generateTestHook('Quest.ActivityIndicator')} />
           </View>
           <View style={styles.bottom}/>
         </ViewGradient>
@@ -182,7 +184,6 @@ export default class Quest extends Component{
         input: ''
       });
 
-      this.refs.input.focus();
     }, 1000);
 
   }
@@ -201,7 +202,6 @@ export default class Quest extends Component{
           countdown: data.val().answer.toString().length
         });
 
-        this.refs.input.focus();
       }
       else
         this.setState({
@@ -239,6 +239,9 @@ export default class Quest extends Component{
   }
 
 }
+
+const TestableQuest = hook(Quest);
+export default TestableQuest;
 
 const styles = StyleSheet.create({
 

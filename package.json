@@ -6,7 +6,11 @@
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "eject": "expo eject"
+    "eject": "expo eject",
+    "test": "node_modules/.bin/jest"
+  },
+  "jest": {
+    "preset": "jest-expo"
   },
   "dependencies": {
     "expo": "^29.0.0",
@@ -16,6 +20,7 @@
     "react-navigation": "^2.17.0"
   },
   "devDependencies": {
+    "cavy": "^0.6.1",
     "jest-expo": "^29.0.0"
   }
 }
