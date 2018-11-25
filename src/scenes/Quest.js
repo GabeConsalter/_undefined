@@ -85,7 +85,7 @@ export default class Quest extends Component{
               <View style={styles.right}/>
             </View>
             <View style={styles.body}>
-              <Text style={styles.quest}>{quest.description}</Text>
+              <Text style={styles.quest} selectable={true}>{quest.description}</Text>
               <TextInput
                 ref='input'
                 value={input}
