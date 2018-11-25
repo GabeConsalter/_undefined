@@ -170,9 +170,6 @@ export default class Quest extends Component{
 
   incorrect(){
 
-    console.log(this.state.quest.answer.toUpperCase() === this.state.input);
-    console.log(this.state.input);
-
     this.setState({ response: 'NOP' });
 
     setTimeout(() => {
