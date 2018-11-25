@@ -176,7 +176,8 @@ export default class Quest extends Component{
       this.setState({
         sended: false,
         response: '',
-        input: ''
+        input: '',
+        countdown: this.state.quest.answer.toString().length
       });
 
       this.refs.input.focus();
